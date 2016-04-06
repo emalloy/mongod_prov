@@ -28,7 +28,7 @@ mongo $DB --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: 
 
 # Stop MongoDB service
 /usr/bin/mongod --dbpath /data --shutdown
-
+sleep 3
 echo "========================================================================"
 echo "MongoDB Version: \"$MONGODB_VERSION\""
 echo "MongoDB User: \"$USER\""
@@ -37,4 +37,4 @@ echo "MongoDB Database: \"$DB\""
 echo "MongoDB Role: \"$ROLE\""
 echo "========================================================================"
 
-/usr/bin/mongod --dbpath /data &
+mongod --auth 
