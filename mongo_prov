@@ -7,14 +7,14 @@ if ! hash mongo >/dev/null 2>&1; then
 fi
 
 MONGODB_VERSION=$(mongo --version | cut -d: -f2| awk '{ print $1 }')
-USER=${MONGODB_USERNAME:-mongo}
-PASS=${MONGODB_PASSWORD:-$(head -8 /dev/urandom  |sha1sum  |awk ' { print $1 }')}
-DB=${MONGODB_DBNAME:-admin}
+MUSER=${MONGODB_USERNAME:-mongo}
+MPASS=${MONGODB_PASSWORD:-$(head -8 /dev/urandom  |sha1sum  |awk ' { print $1 }')}
+MDB=${MONGODB_DBNAME:-admin}
 if [ ! -z "$MONGODB_DBNAME" ]
 then
-    ROLE=${MONGODB_ROLE:-dbOwner}
+    MROLE=${MONGODB_ROLE:-dbOwner}
 else
-    ROLE=${MONGODB_ROLE:-dbAdminAnyDatabase}
+    MROLE=${MONGODB_ROLE:-dbAdminAnyDatabase}
 fi
 
 # Start MongoDB service
@@ -22,19 +22,43 @@ mkdir -p /data
 /usr/bin/mongod --dbpath /data --nojournal &
 while ! nc -vz localhost 27017; do sleep 4; done
 
-# Create User
+mongo24x ()
+{
+# Create User in mongo <=2.4
+local USER=$1
+local PASS=$2
+local ROLE=$3
+local DB=$4
+echo "Creating user: \"$USER\"..."
+mongo $DB --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ { role: '$ROLE', db: '$DB' } ] });"
+}
+
+mongo26x ()
+{
+# Create User in mongo >=2.6
+local USER=$1
+local PASS=$2
+local ROLE=$3
+local DB=$4
 echo "Creating user: \"$USER\"..."
 mongo $DB --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: '$ROLE', db: '$DB' } ] });"
+}
+
+if [[ ${MONGODB_VERSION} =~ ^3 ]]; then
+  mongo26x $MUSER $MPASS $MROLE $MDB
+  else
+  mongo24x $MUSER $MPASS $MROLE $MDB
+fi
 
 # Stop MongoDB service
 /usr/bin/mongod --dbpath /data --shutdown
 sleep 3
 echo "========================================================================"
 echo "MongoDB Version: \"$MONGODB_VERSION\""
-echo "MongoDB User: \"$USER\""
-echo "MongoDB Password: \"$PASS\""
-echo "MongoDB Database: \"$DB\""
-echo "MongoDB Role: \"$ROLE\""
+echo "MongoDB User: \"$MUSER\""
+echo "MongoDB Password: \"$MPASS\""
+echo "MongoDB Database: \"$MDB\""
+echo "MongoDB Role: \"$MROLE\""
 echo "========================================================================"
 
 mongod --auth 
