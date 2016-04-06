@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env
 set -o errexit
 
 MONGODB_VERSION=$(mongo --version | cut -d: -f2| awk '{ print $1 }')
