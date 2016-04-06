@@ -1,9 +1,12 @@
-#!/usr/bin/env
+#!/usr/bin/env bash
 set -o errexit
 
+if ! hash mongo >/dev/null 2>&1; then
+  printf "Can't find mongo, exiting!\n"
+  exit 1
+fi
+
 MONGODB_VERSION=$(mongo --version | cut -d: -f2| awk '{ print $1 }')
-
-
 USER=${MONGODB_USERNAME:-mongo}
 PASS=${MONGODB_PASSWORD:-$(pwgen -s -1 16)}
 DB=${MONGODB_DBNAME:-admin}
