@@ -8,7 +8,7 @@ fi
 
 MONGODB_VERSION=$(mongo --version | cut -d: -f2| awk '{ print $1 }')
 USER=${MONGODB_USERNAME:-mongo}
-PASS=${MONGODB_PASSWORD:-$(pwgen -s -1 16)}
+PASS=${MONGODB_PASSWORD:-$(head -8 /dev/urandom  |sha1sum  |awk ' { print $1 }')}
 DB=${MONGODB_DBNAME:-admin}
 if [ ! -z "$MONGODB_DBNAME" ]
 then
