@@ -31,7 +31,7 @@ local PASS=$2
 local ROLE=$3
 local DB=$4
 echo "Creating user: \"$USER\"..."
-mongo $DB --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ '$ROLE', '$DB' ] });"
+mongo $DB --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ '$ROLE', '$DB', 'root' ] });"
 }
 
 mongo26x ()
@@ -62,4 +62,4 @@ echo "MongoDB Database: \"$MDB\""
 echo "MongoDB Role: \"$MROLE\""
 echo "========================================================================"
 
-mongod --auth 
+mongod --auth
