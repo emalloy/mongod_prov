@@ -30,7 +30,7 @@ local USER=$1
 local PASS=$2
 local ROLE=$3
 local DB=$4
-echo "Creating user: \"$USER\"..."
+mongo admin --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ 'userAdminAnyDatabase'] });"
 mongo $DB --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ '$ROLE', '$DB', 'root' ] });"
 }
 
@@ -41,7 +41,7 @@ local USER=$1
 local PASS=$2
 local ROLE=$3
 local DB=$4
-echo "Creating user: \"$USER\"..."
+mongo admin --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: 'userAdminAnyDatabase', db: 'admin' } ] });"
 mongo $DB --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: '$ROLE', db: '$DB' } ] });"
 }
 
