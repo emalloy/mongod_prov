@@ -61,4 +61,4 @@ echo "MongoDB Database: \"$MDB\""
 echo "MongoDB Role: \"$MROLE\""
 echo "========================================================================"
 
-mongod --auth
+mongod --dbpath /data --auth
