@@ -30,7 +30,7 @@ local USER=$1
 local PASS=$2
 local DB=$3
 mongo admin --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ 'userAdminAnyDatabase'] });"
-mongo $DB --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ 'userAdmin', '$DB' ] });"
+mongo $DB --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ 'userAdmin','readWrite','dbAdmin','$DB' ] });"
 }
 
 mongo26x ()
