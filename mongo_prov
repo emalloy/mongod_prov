@@ -28,10 +28,9 @@ mongo24x ()
 # Create User in mongo <=2.4
 local USER=$1
 local PASS=$2
-local ROLE=$3
-local DB=$4
+local DB=$3
 mongo admin --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ 'userAdminAnyDatabase'] });"
-mongo $DB --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ '$ROLE', '$DB', 'root' ] });"
+mongo $DB --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ 'userAdmin', '$DB' ] });"
 }
 
 mongo26x ()
@@ -48,7 +47,7 @@ mongo $DB --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: 
 if [[ ${MONGODB_VERSION} =~ ^3 ]]; then
   mongo26x $MUSER $MPASS $MROLE $MDB
   else
-  mongo24x $MUSER $MPASS $MROLE $MDB
+  mongo24x $MUSER $MPASS $MDB
 fi
 
 # Stop MongoDB service
