@@ -29,7 +29,7 @@ local DB_RO_USER=${MONGO_RO_USER}
 local DB_RW_PASS=${MONGO_RW_PASS}
 local DB_RO_PASS=${MONGO_RO_PASS}
 mongo --nodb --eval \
-"primary='${DB_HOST}',admin_user='${ADMIN_USER}',admin_pass='${ADMIN_PASS}',db1='${DB1}',db2='${DB2}',db3='${DB3}',db_admin_user='${DB_ADMIN_USER}',db_admin_pass='${DB_ADMIN_PASS}',rw_user='${DB_RW_USER}',rw_pass='${DB_RW_PASS}',ro_user='${DB_RO_USER}',ro_pass='${DB_RO_PASS}'"  mongoAuthn.js
+"primary='${DB_HOST}',admin_user='${ADMIN_USER}',admin_pass='${ADMIN_PASS}',db1='${DB1}',db2='${DB2}',db3='${DB3}',db_admin_user='${DB_ADMIN_USER}',db_admin_pass='${DB_ADMIN_PASS}',rw_user='${DB_RW_USER}',rw_pass='${DB_RW_PASS}',ro_user='${DB_RO_USER}',ro_pass='${DB_RO_PASS}'"  /usr/local/bin/mongoAuthn.js
 }
 
 mongo26x ()
