@@ -8,15 +8,7 @@ if ! hash mongo >/dev/null 2>&1; then
 fi
 
 MONGODB_VERSION=$(mongo --version | cut -d: -f2| awk '{ print $1 }')
-MUSER=${MONGODB_USERNAME:-mongo}
-MPASS=${MONGODB_PASSWORD:-$(head -8 /dev/urandom  |sha1sum  |awk ' { print $1 }')}
-MDB=${MONGODB_DBNAME:-admin}
-if [ ! -z "$MONGODB_DBNAME" ]
-then
-    MROLE=${MONGODB_ROLE:-dbOwner}
-else
-    MROLE=${MONGODB_ROLE:-dbAdminAnyDatabase}
-fi
+printf "provisioning MongoDB v"${MONGODB_VERSION}
 
 # Start MongoDB service
 mkdir -p /data
@@ -26,39 +18,44 @@ while ! nc -vz localhost 27017; do sleep 4; done
 mongo24x ()
 {
 # Create User in mongo <=2.4
-local USER=$1
-local PASS=$2
-local DB=$3
-mongo admin --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ 'userAdminAnyDatabase'] });"
-mongo $DB --eval "db.addUser({ user: '$USER', pwd: '$PASS', roles: [ 'userAdmin','readWrite','dbAdmin','$DB' ] });"
+local DB_HOST=${MONGO_DB_HOST:-127.0.0.1}
+local DB1=${MONGO_DB_1:-mongodb1}
+local DB2=${MONGO_DB_2:-mongodb2}
+local DB3=${MONGO_DB_3:-mongodb3}
+local ADMIN_USER=${MONGO_ADMIN_USER:-mongoAdminUser}
+local ADMIN_PASS=${MONGO_ADMIN_PASS:-mongoAdminPass}
+local DB_ADMIN_USER=${MONGO_DB_ADMIN_USER:-mongoDbAdminUser}
+local DB_ADMIN_PASS=${MONGO_DB_ADMIN_PASS:-mongoDbAdminPass}
+local DB_RW_USER=${MONGO_RW_USER:-mongoDbRwUser}
+local DB_RO_USER=${MONGO_RO_USER:-mongoDbRoPass}
+local DB_RW_PASS=${MONGO_RW_PASS:-mongoDbRwPass}
+local DB_RO_PASS=${MONGO_RO_PASS:-mongoDbRoPass}
+mongo --nodb --eval \
+"primary='${DB_HOST}',admin_user='${ADMIN_USER}',admin_pass='${ADMIN_PASS}',db1='${DB1}',db2='${DB2}',db3='${DB3}',db_admin_user='${DB_ADMIN_USER}',db_admin_pass='${DB_ADMIN_PASS}',rw_user='${DB_RW_USER}',rw_pass='${DB_RW_PASS}',ro_user='${DB_RO_USER}',ro_pass='${DB_RO_PASS}'"  /usr/local/bin/mongoAuthn.js
 }
 
-mongo26x ()
+mongo3x ()
 {
-# Create User in mongo >=2.6
-local USER=$1
-local PASS=$2
-local ROLE=$3
-local DB=$4
+# Create User in mongo >=3
+local USER=${MONGO_DB_ADMIN_USER:-mongoAdmin}
+local PASS=${MONGO_DB_ADMIN_PASS:-mongoPassword}
+local DBUSER=${MONGO_DBUSER:-defaultDbUser}
+local DBPASS=${MONGO_DBPASS:-defaultDbUserPass}
+local ROLE=${MONGO_DB_ROLE:-userAdminAnyDatabase}
+local DB=${MONGO_DBNAME:-mongoDefaultDb}
 mongo admin --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: 'userAdminAnyDatabase', db: 'admin' } ] });"
-mongo $DB --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: '$ROLE', db: '$DB' } ] });"
+mongo -u $USER -p $PASS --eval "db.createUser({ user: '$DBUSER', pwd: '$DBPASS', roles: [ { role: 'dbOwner', db: '$DB' } ] });" \
+    localhost:27017/admin
 }
 
 if [[ ${MONGODB_VERSION} =~ ^3 ]]; then
-  mongo26x $MUSER $MPASS $MROLE $MDB
+  mongo3x
   else
-  mongo24x $MUSER $MPASS $MDB
+  mongo24x
 fi
 
 # Stop MongoDB service
 /usr/bin/mongod --dbpath /data --shutdown
-sleep 3
-echo "========================================================================"
-echo "MongoDB Version: \"$MONGODB_VERSION\""
-echo "MongoDB User: \"$MUSER\""
-echo "MongoDB Password: \"$MPASS\""
-echo "MongoDB Database: \"$MDB\""
-echo "MongoDB Role: \"$MROLE\""
-echo "========================================================================"
+sleep 4
 
 mongod --dbpath /data --auth
