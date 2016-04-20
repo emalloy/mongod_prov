@@ -39,10 +39,13 @@ mongo3x ()
 # Create User in mongo >=3
 local USER=${MONGO_DB_ADMIN_USER:-mongoAdmin}
 local PASS=${MONGO_DB_ADMIN_PASS:-mongoPassword}
+local DBUSER=${MONGO_DBUSER:-defaultDbUser}
+local DBPASS=${MONGO_DBPASS:-defaultDbUserPass}
 local ROLE=${MONGO_DB_ROLE:-userAdminAnyDatabase}
 local DB=${MONGO_DBNAME:-mongoDefaultDb}
 mongo admin --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: 'userAdminAnyDatabase', db: 'admin' } ] });"
-#mongo $DB --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: '$ROLE', db: '$DB' } ] });"
+mongo -u $USER -p $PASS --eval "db.createUser({ user: '$DBUSER', pwd: '$DBPASS', roles: [ { role: 'dbOwner', db: '$DB' } ] });" \
+    localhost:27017/admin
 }
 
 if [[ ${MONGODB_VERSION} =~ ^3 ]]; then
