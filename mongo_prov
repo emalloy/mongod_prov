@@ -42,7 +42,7 @@ local PASS=${MONGO_DB_ADMIN_PASS:-mongoPassword}
 local ROLE=${MONGO_DB_ROLE:-userAdminAnyDatabase}
 local DB=${MONGO_DBNAME:-mongoDefaultDb}
 mongo admin --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: 'userAdminAnyDatabase', db: 'admin' } ] });"
-mongo $DB --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: '$ROLE', db: '$DB' } ] });"
+#mongo $DB --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: '$ROLE', db: '$DB' } ] });"
 }
 
 if [[ ${MONGODB_VERSION} =~ ^3 ]]; then
