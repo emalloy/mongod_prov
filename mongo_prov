@@ -19,17 +19,17 @@ mongo24x ()
 {
 # Create User in mongo <=2.4
 local DB_HOST=${MONGO_DB_HOST:-127.0.0.1}
-local DB1=${MONGO_DB_1}
-local DB2=${MONGO_DB_2}
-local DB3=${MONGO_DB_3}
-local ADMIN_USER=${MONGO_ADMIN_USER}
-local ADMIN_PASS=${MONGO_ADMIN_PASS}
-local DB_ADMIN_USER=${MONGO_DB_ADMIN_USER}
-local DB_ADMIN_PASS=${MONGO_DB_ADMIN_PASS}
-local DB_RW_USER=${MONGO_RW_USER}
-local DB_RO_USER=${MONGO_RO_USER}
-local DB_RW_PASS=${MONGO_RW_PASS}
-local DB_RO_PASS=${MONGO_RO_PASS}
+local DB1=${MONGO_DB_1:-mongodb1}
+local DB2=${MONGO_DB_2:-mongodb2}
+local DB3=${MONGO_DB_3:-mongodb3}
+local ADMIN_USER=${MONGO_ADMIN_USER:-mongoAdminUser}
+local ADMIN_PASS=${MONGO_ADMIN_PASS:-mongoAdminPass}
+local DB_ADMIN_USER=${MONGO_DB_ADMIN_USER:-mongoDbAdminUser}
+local DB_ADMIN_PASS=${MONGO_DB_ADMIN_PASS:-mongoDbAdminPass}
+local DB_RW_USER=${MONGO_RW_USER:-mongoDbRwUser}
+local DB_RO_USER=${MONGO_RO_USER:-mongoDbRoPass}
+local DB_RW_PASS=${MONGO_RW_PASS:-mongoDbRwPass}
+local DB_RO_PASS=${MONGO_RO_PASS:-mongoDbRoPass}
 mongo --nodb --eval \
 "primary='${DB_HOST}',admin_user='${ADMIN_USER}',admin_pass='${ADMIN_PASS}',db1='${DB1}',db2='${DB2}',db3='${DB3}',db_admin_user='${DB_ADMIN_USER}',db_admin_pass='${DB_ADMIN_PASS}',rw_user='${DB_RW_USER}',rw_pass='${DB_RW_PASS}',ro_user='${DB_RO_USER}',ro_pass='${DB_RO_PASS}'"  /usr/local/bin/mongoAuthn.js
 }
