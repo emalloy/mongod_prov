@@ -48,7 +48,7 @@ mongo admin --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role
 #mongo -u $USER -p $PASS --eval "db.createUser({ user: '$DBUSER', pwd: '$DBPASS', roles: [ { role: 'dbOwner', db: '$DB' } ] });" \
 #    localhost:27017/admin
 mongo --nodb --eval \
-"primary='${DB_HOST}',admin_user='${DBUSER}',admin_pass='${DBPASS}'"  /usr/local/bin/mongoAuthn.js
+"primary='${DB_HOST}',admin_user='${DBUSER}',admin_pass='${DBPASS}'"  /usr/local/bin/mongo3xAuthn.js
 }
 
 
