@@ -44,11 +44,12 @@ local DBUSER=${MONGO_DBUSER:-defaultDbUser}
 local DBPASS=${MONGO_DBPASS:-defaultDbUserPass}
 local ROLE=${MONGO_DB_ROLE:-userAdminAnyDatabase}
 local DB=${MONGO_DBNAME:-mongoDefaultDb}
-mongo admin --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: 'userAdminAnyDatabase', db: 'admin' } ] });"
+#mongo admin --eval "db.createUser({ user: '$USER', pwd: '$PASS', roles: [ { role: 'userAdminAnyDatabase', db: 'admin' } ] });"
 #mongo -u $USER -p $PASS --eval "db.createUser({ user: '$DBUSER', pwd: '$DBPASS', roles: [ { role: 'dbOwner', db: '$DB' } ] });" \
 #    localhost:27017/admin
 mongo --nodb --eval \
-"primary='${DB_HOST}',admin_user='${DBUSER}',admin_pass='${DBPASS}'"  /usr/local/bin/mongo3xAuthn.js
+"primary='${DB_HOST}',admin_user='${USER}',admin_pass='${PASS}',db1='${DB}',db_admin_user='${DBUSER}',db_admin_pass='${DBPASS}'" \
+  /usr/local/bin/mongo3xAuthn.js
 }
 
 
